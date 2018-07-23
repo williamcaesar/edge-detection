@@ -27,6 +27,7 @@ def add_zero(matrix):
 
 
 def apply_mask(image, mask, row, column, channel=-1):
+    """Apply a mask."""
     if len(image.shape) == 2:
         row01 = int(image[row-1, column-1])*mask[0] + \
             int(image[row-1, column])*mask[1] + \
@@ -57,13 +58,13 @@ def apply_mask(image, mask, row, column, channel=-1):
 
 
 def filter(image, mask, div):
+    """Apply a filter."""
     if type(mask) != tuple or not(type(div) != float or type(div) != int):
             return
     if len(mask) != 9:
         return
     div = float(div)
 
-    print("Result dimensions ", image.shape)
     image = add_zero(image)
     print("\nadd zeroes: ", image.shape)
 
@@ -85,7 +86,8 @@ def filter(image, mask, div):
     return result
 
 
-def sobel(image, orientation='vertical ou horizontal'):
+def sobel(image, orientation='vertical or horizontal'):
+    """Apply sobel filter."""
     print("Result dimensions ", image.shape)
     vertical_mask = (-1, 0, 1, -2, 0, 2, -1, 0, 1)
     horizontal_mask = (-1, -2, -1, 0, 0, 0, 1, 2, 1)
@@ -94,6 +96,8 @@ def sobel(image, orientation='vertical ou horizontal'):
         return filter(image, vertical_mask, 4.0)
     elif orientation == 'horizontal':
         return filter(image, horizontal_mask, 4.0)
+    else:
+        print('orientation must be \'vertical\' or \'horizontal\'')
 
     vertical_sobel = filter(image, vertical_mask, 4.0)
     horizontal_sobel = filter(image, horizontal_mask, 4.0)
@@ -101,6 +105,7 @@ def sobel(image, orientation='vertical ou horizontal'):
 
 
 def prewitt(image, orientation='vertical ou horizontal'):
+    """Apply prewitt filter."""
     print("Result dimensions ", image.shape)
     vertical_mask = (-1, 0, 1, -1, 0, 1, -1, 0, 1)
     horizontal_mask = (-1, -1, -1, 0, 0, 0, 1, 1, 1)
@@ -116,6 +121,7 @@ def prewitt(image, orientation='vertical ou horizontal'):
 
 
 def roberts(image, orientation='vertical ou horizontal'):
+    """Apply roberts filter."""
     print("Result dimensions ", image.shape)
     vertical_mask = (0, 0, -1, 0, 1, 0, 0, 0, 0)
     horizontal_mask = (-1, 0, 0, 0, 1, 0, 0, 0, 0)
@@ -124,6 +130,8 @@ def roberts(image, orientation='vertical ou horizontal'):
         return filter(image, vertical_mask, 3.0)
     elif orientation == 'horizontal':
         return filter(image, horizontal_mask, 3.0)
+    else:
+        print('orientation must be \'vertical\' or \'horizontal\'')
 
     roberts_vertical = filter(image, vertical_mask, 3.0)
     horizontal_roberts = filter(image, horizontal_mask, 3.0)
@@ -131,6 +139,7 @@ def roberts(image, orientation='vertical ou horizontal'):
 
 
 def isotropic(image, orientation='vertical or horizontal'):
+    """Apply isotropic filter."""
     print("Result dimensions ", image.shape)
     vertical_mask = (1, 0, -1, 1.4142135623730951,
                      0, -1.4142135623730951, 1, 0, -1)
@@ -144,16 +153,22 @@ def isotropic(image, orientation='vertical or horizontal'):
         return filter(image, vertical_mask, div)
     elif orientation == 'horizontal':
         return filter(image, horizontal_mask, div)
-
+    else:
+        print('orientation must be \'vertical\' or \'horizontal\'')
     vertical_isotropic = filter(image, vertical_mask, div)
     horizontal_isotropic = filter(image, horizontal_mask, div)
     return sum_images(vertical_isotropic, horizontal_isotropic)
 
 
 if (__name__ == '__main__'):
-    image = cv2.imread('images/sapo.png', 0)
+    image = cv2.imread('images/sapo.png')
+    print('original image')
     show(image)
+    print('sobel image')
     show(sobel(image))
+    print('prewitt image')
     show(prewitt(image))
+    print('roberts image')
     show(roberts(image))
+    print('isotropic image')
     show(isotropic(image))
